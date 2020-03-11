@@ -1,38 +1,68 @@
-Role Name
-=========
+# Ansible EventStore Role
 
-A brief description of the role goes here.
+An Ansible role that installs and configures a Linux machine to be used as an [EventStore server](https://eventstore.com).
 
-Requirements
-------------
+## Requirements
 
-Any pre-requisites that may not be covered by Ansible itself or the role should be mentioned here. For instance, if the role uses the EC2 module, it may be a good idea to mention in this section that the boto package is required.
+Ubuntu 14.04 (Trusty) LTS and up.
 
-Role Variables
---------------
+## Role Variables
 
-A description of the settable variables for this role should go here, including any variables that are in defaults/main.yml, vars/main.yml, and any variables that can/should be set via parameters to the role. Any variables that are read from other roles and/or the global scope (ie. hostvars, group vars, etc.) should be mentioned here as well.
+Available variables are listed below, along with default values (see `defaults/main.yml`):
 
-Dependencies
-------------
+**Important: null values default to the inherent default values defined by EventStore.  See documentation for more information.**
+```yaml
+# Role specific variables
+eventstore_version: 5.0.6-1
+eventstore_admin_password: changeit
+eventstore_admin_new_password: null
 
-A list of other roles hosted on Galaxy should go here, plus any details in regards to parameters that may need to be set for other roles, or variables that are used from other roles.
+# Cluster options variables
+# See https://eventstore.com/docs/server/command-line-arguments/index.html#cluster-options
+eventstore_cluster_size: null
+eventstore_discover_via_dns: null
+eventstore_cluster_dns: null
+eventstore_cluster_gossip_port: null
+eventstore_gossip_seed: null
+eventstore_cluster_gossip_timeout: null
+eventstore_cluster_gossip_interval: null
 
-Example Playbook
-----------------
+# See https://eventstore.com/docs/server/command-line-arguments/index.html#database-options
+eventstore_db: null
+eventstore_prepare_timeout: null
+eventstore_commit_timeout: null
 
-Including an example of how to use your role (for instance, with variables passed in as parameters) is always nice for users too:
+# See https://eventstore.com/docs/server/command-line-arguments/index.html#interface-options
+eventstore_ext_ip: "127.0.0.1"
+eventstore_ext_ip_advertise_as: null
+eventstore_int_ip: null
+eventstore_int_tcp_port: null
+eventstore_ext_tcp_port: null
+eventstore_int_http_port: 2113
+eventstore_ext_http_port: 2113
+eventstore_int_http_prefixes: null
+eventstore_ext_http_prefixes: null
+eventstore_add_interface_prefixes: null
+eventstore_int_tcp_heartbeat_timeout: null
+eventstore_int_tcp_heartbeat_interval: null
+eventstore_ext_tcp_heartbeat_timeout: null
+eventstore_ext_tcp_heartbeat_interval: null
 
-    - hosts: servers
-      roles:
-         - { role: username.rolename, x: 42 }
+# See https://eventstore.com/docs/server/command-line-arguments/index.html#projections-options
+eventstore_run_projections: null
+eventstore_projection_threads: null
+```
 
-License
--------
+## Example Playbook
 
-BSD
+```yaml
+- hosts: all
+  roles:
+    - eventstore
+  vars:
+    eventstore_admin_new_password: 'please_use_ansible_vault'
+```
 
-Author Information
-------------------
+## License
 
-An optional section for the role authors to include contact information, or a website (HTML is not allowed).
+Copyright © 2020, GSoft inc. This code is licensed under the Apache License, Version 2.0. You may obtain a copy of this license at https://github.com/gsoft-inc/gsoft-license/blob/master/LICENSE.

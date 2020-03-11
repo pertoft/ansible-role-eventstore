@@ -1,5 +1,6 @@
 # See https://github.com/ansible/ansible/issues/9966
 - name: Install apt_key dependencies
+  become: true
   apt:
     name: 
       - python-urllib3

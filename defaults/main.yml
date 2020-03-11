@@ -3,3 +3,4 @@ eventstore_admin_password: changeit
 eventstore_cluster_size: 1
 eventstore_ext_ip: "127.0.0.1"
 eventstore_ext_http_port: 2113
+eventstore_int_http_port: 2113
