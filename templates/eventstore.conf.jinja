@@ -9,7 +9,7 @@ ClusterSize: {{ eventstore_cluster_size }}
 {% include 'partials/eventstore.conf.cluster.jinja' %}
 {% endif %}
 {#
-Projections options: 
+Projections options:
 https://eventstore.com/docs/server/command-line-arguments/index.html#projections-options
 #}
 {% include 'partials/eventstore.conf.projections.jinja' %}
@@ -19,7 +19,7 @@ https://eventstore.com/docs/server/command-line-arguments/index.html#database-op
 #}
 {% include 'partials/eventstore.conf.database.jinja' %}
 {#
-Interface options: 
+Interface options:
 https://eventstore.com/docs/server/command-line-arguments/index.html#interface-options
 #}
 {% include 'partials/eventstore.conf.interface.jinja' %}

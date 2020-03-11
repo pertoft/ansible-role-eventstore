@@ -1,5 +1,5 @@
 - name: restart eventstore
-  systemd: 
+  systemd:
     name: eventstore
     state: restarted
     enabled: yes

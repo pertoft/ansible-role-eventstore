@@ -18,4 +18,3 @@ galaxy_info:
   galaxy_tags:
     - eventstore
     - database
-    - event sourcing

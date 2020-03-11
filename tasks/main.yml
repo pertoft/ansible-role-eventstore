@@ -2,7 +2,7 @@
 - name: Install apt_key dependencies
   become: true
   apt:
-    name: 
+    name:
       - python-urllib3
       - python-openssl
       - python-pyasn1
