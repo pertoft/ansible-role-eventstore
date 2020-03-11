@@ -2,6 +2,8 @@
 
 An Ansible role that installs and configures a Linux machine to be used as an [EventStore server](https://eventstore.com).
 
+[See usage examples here.](https://github.com/gsoft-inc/ansible-role-eventstore-example)
+
 ## Requirements
 
 Ubuntu 14.04 (Trusty) LTS and up.
