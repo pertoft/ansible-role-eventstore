@@ -1,0 +1,33 @@
+{% if eventstore_discover_via_dns is defined %}
+DiscoverViaDns: {{ eventstore_discover_via_dns }}
+{% endif %}
+{##}
+{% if eventstore_discover_via_dns is defined and eventstore_discover_via_dns == true %}
+ClusterDns: {{ eventstore_cluster_dns }}
+{% endif %}
+{##}
+{% if eventstore_cluster_gossip_port is defined %}
+ClusterGossipPort: {{ eventstore_cluster_gossip_port }}
+{% endif %}
+{##}
+{% if gossip_seeds is defined %}
+GossipSeed: {{ 
+gossip_seeds | 
+map('extract', hostvars, ['ansible_eth0', 'ipv4', 'address']) | 
+map('regex_replace', '$', ":" ~ eventstore_int_http_port|string) | 
+join(',') }}
+{#
+    1. Get list of gossip seed servers
+    2. Extract their ip address from ansible facts
+    3. Append int http port to end of string
+    4. Comma seperate the list
+#}    
+{% endif %}
+{##}
+{% if eventstore_cluster_gossip_timeout is defined %}
+GossipTimeoutMs: {{ eventstore_cluster_gossip_timeout }}
+{% endif %}
+{##}
+{% if eventstore_cluster_gossip_interval is defined %}
+GossipIntervalMs: {{ eventstore_cluster_gossip_interval }}
+{% endif %}

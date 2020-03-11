@@ -1,0 +1,11 @@
+{% if eventstore_db is defined %}
+Db: {{ eventstore_db }}
+{% endif %}
+{##}
+{% if eventstore_prepare_timeout is defined %}
+PrepareTimeoutMs: {{ eventstore_prepare_timeout }}
+{% endif %}
+{##}
+{% if eventstore_commit_timeout is defined %}
+CommitTimeoutMs: {{ eventstore_commit_timeout }}
+{% endif %}

@@ -1,0 +1,21 @@
+galaxy_info:
+  role_name: eventstore
+  author: Yohan Belval
+  description: EventStore database role for Linux.
+  company: GSoft
+
+  license: "license (Apache-2.0)"
+
+  min_ansible_version: 2.4
+
+  platforms:
+    - name: Ubuntu
+      versions:
+        - trusty
+        - xenial
+        - bionic
+
+  galaxy_tags:
+    - eventstore
+    - database
+    - event sourcing

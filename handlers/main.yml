@@ -1,0 +1,6 @@
+- name: restart eventstore
+  systemd: 
+    name: eventstore
+    state: restarted
+    enabled: yes
+    daemon_reload: yes

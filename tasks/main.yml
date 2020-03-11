@@ -1,0 +1,58 @@
+# See https://github.com/ansible/ansible/issues/9966
+- name: Install apt_key dependencies
+  apt:
+    name: 
+      - python-urllib3
+      - python-openssl
+      - python-pyasn1
+      - python-pip
+  when: ansible_distribution == 'Ubuntu' or ansible_distribution_release == 'trusty'
+
+# See https://github.com/ansible/ansible/issues/9966
+- name: install 'ndg-httpsclient'
+  pip:
+    name: ndg-httpsclient
+  when: ansible_distribution == 'Ubuntu' or ansible_distribution_release == 'trusty'
+
+- name: Install pre-built package
+  apt:
+    deb: "https://packagecloud.io/EventStore/EventStore-OSS/packages/\
+      {{ ansible_distribution }}/\
+      {{ ansible_distribution_release }}/\
+      eventstore-oss_{{ eventstore_version }}_amd64.deb/download.deb"
+    state: present
+
+- name: Add configuration
+  template:
+    src: eventstore.conf.jinja
+    dest: /etc/eventstore/eventstore.conf
+  notify:
+    - restart eventstore
+
+- name: Ensure service is started and enabled to start at boot
+  systemd:
+    name: eventstore
+    state: started
+    enabled: true
+
+- name: Change admin password
+  uri:
+    url: "http://{{ eventstore_ext_ip }}:{{ eventstore_ext_http_port }}/users/admin/command/reset-password"
+    method: POST
+    body_format: json
+    user: admin
+    password: "{{ eventstore_admin_password }}"
+    force_basic_auth: true
+    body: '{"newPassword":"{{ eventstore_admin_new_password }}"}'
+    headers:
+      Content-Type: "application/json"
+      charset: "UTF-8"
+    status_code:
+    - 200
+    - 401
+  register: pwd_change_result
+  changed_when:
+    - pwd_change_result.status == 200
+
+
+  when: eventstore_admin_new_password is defined

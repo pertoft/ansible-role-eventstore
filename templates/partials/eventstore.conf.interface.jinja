@@ -1,0 +1,55 @@
+{% if eventstore_ext_ip is defined %}
+ExtIp: {{ eventstore_ext_ip }}
+{% endif %}
+{##}
+{% if eventstore_ext_ip_advertise_as is defined %}
+ExtIpAdvertiseAs: {{ eventstore_ext_ip_advertise_as }}
+{% endif %}
+{##}
+{% if eventstore_int_ip is defined %}
+IntIp: {{ eventstore_int_ip }}
+{% endif %}
+{##}
+{% if eventstore_int_tcp_port is defined %}
+IntTcpPort: {{ eventstore_int_tcp_port }}
+{% endif %}
+{##}
+{% if eventstore_ext_tcp_port is defined %}
+ExtTcpPort: {{ eventstore_ext_tcp_port }}
+{% endif %}
+{##}
+{% if eventstore_int_http_port is defined %}
+IntHttpPort: {{ eventstore_int_http_port }}
+{% endif %}
+{##}
+{% if eventstore_ext_http_port is defined %}
+ExtHttpPort: {{ eventstore_ext_http_port }}
+{% endif %}
+{##}
+{% if eventstore_int_http_prefixes is defined %}
+IntHttpPrefixes: {{ eventstore_int_http_prefixes }}
+{% endif %}
+{##}
+{% if eventstore_ext_http_prefixes is defined %}
+ExtHttpPrefixes: {{ eventstore_ext_http_prefixes }}
+{% endif %}
+{##}
+{% if eventstore_add_interface_prefixes is defined %}
+AddInterfacePrefixes: {{ eventstore_add_interface_prefixes }}
+{% endif %}
+{##}
+{% if eventstore_int_tcp_heartbeat_timeout is defined %}
+IntTcpHeartbeatTimeout: {{ eventstore_int_tcp_heartbeat_timeout }}
+{% endif %}
+{##}
+{% if eventstore_int_tcp_heartbeat_interval is defined %}
+IntTcpHeartbeatInterval: {{ eventstore_int_tcp_heartbeat_interval }}
+{% endif %}
+{##}
+{% if eventstore_ext_tcp_heartbeat_timeout is defined %}
+ExtTcpHeartbeatTimeout: {{ eventstore_ext_tcp_heartbeat_timeout }}
+{% endif %}
+{##}
+{% if eventstore_ext_tcp_heartbeat_interval is defined %}
+ExtTcpHeartbeatInterval: {{ eventstore_ext_tcp_heartbeat_interval }}
+{% endif %}
