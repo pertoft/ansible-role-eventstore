@@ -13,7 +13,6 @@ Ubuntu 14.04 (Trusty) LTS and up.
 Available variables are listed below, along with default values (see `defaults/main.yml`):
 
 ```yaml
-# Role specific variables
 eventstore_version: 5.0.6-1
 eventstore_admin_password: changeit
 eventstore_admin_new_password: null
