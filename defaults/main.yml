@@ -1,6 +1,4 @@
 eventstore_version: 5.0.6-1
 eventstore_admin_password: changeit
-eventstore_cluster_size: 1
-eventstore_ext_ip: "127.0.0.1"
-eventstore_ext_http_port: 2113
-eventstore_int_http_port: 2113
+eventstore_admin_new_password: null
+eventstore_config_file: "{{ role_path }}/templates/eventstore.conf.j2"

@@ -25,7 +25,7 @@
 
 - name: Add configuration
   template:
-    src: eventstore.conf.jinja
+    src: "{{ eventstore_config_file }}"
     dest: /etc/eventstore/eventstore.conf
   notify:
     - restart eventstore
@@ -36,9 +36,16 @@
     state: started
     enabled: true
 
+- name: Wait for external HTTP port to become open on the host
+  wait_for:
+    host: "{{ ext_ip }}"
+    port: "{{ ext_http_port }}"
+    delay: 5
+    timeout: 30
+
 - name: Change admin password
   uri:
-    url: "http://{{ eventstore_ext_ip }}:{{ eventstore_ext_http_port }}/users/admin/command/reset-password"
+    url: "http://{{ ext_ip }}:{{ ext_http_port }}/users/admin/command/reset-password"
     method: POST
     body_format: json
     user: admin
