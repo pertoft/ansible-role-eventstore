@@ -1,3 +1,3 @@
 config: "{{ lookup('template', eventstore_config_file) | from_yaml }}"
 ext_ip: "{{ config.ExtIp | default('127.0.0.1', true) }}"
-ext_http_port: "{{ config.IntIp | default(2113, true) }}"
+ext_http_port: "{{ config.ExtHttpPort | default(2113, true) }}"
