@@ -13,7 +13,7 @@ Ubuntu 14.04 (Trusty) LTS and up.
 Available variables are listed below, along with default values (see `defaults/main.yml`):
 
 ```yaml
-eventstore_version: 5.0.6-1
+eventstore_version: 5.0.9-1
 eventstore_admin_password: changeit
 eventstore_admin_new_password: null
 eventstore_config_file: "{{ role_path }}/templates/eventstore.conf.j2"
