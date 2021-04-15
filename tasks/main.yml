@@ -41,7 +41,8 @@
     host: "{{ ext_ip }}"
     port: "{{ ext_http_port }}"
     delay: 5
-    timeout: 30
+    timeout: "{{ eventstore_wait_for_http_timeout }}"
+   when: eventstore_wait_for_http
 
 - name: Change admin password
   uri:
