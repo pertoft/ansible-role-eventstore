@@ -62,5 +62,7 @@
   register: pwd_change_result
   changed_when:
     - pwd_change_result.status == 200
-  when: eventstore_admin_new_password is defined
+  when:
+    - eventstore_admin_new_password is defined
+    - eventstore_wait_for_http|default(true)|bool == true
   run_once: true
