@@ -7,13 +7,17 @@
       - python-openssl
       - python-pyasn1
       - python-pip
-  when: ansible_distribution == 'Ubuntu' or ansible_distribution_release == 'trusty'
+  when:
+    - ansible_distribution == 'Ubuntu'
+    - ansible_distribution_release == 'trusty'
 
 # See https://github.com/ansible/ansible/issues/9966
 - name: install 'ndg-httpsclient'
   pip:
     name: ndg-httpsclient
-  when: ansible_distribution == 'Ubuntu' or ansible_distribution_release == 'trusty'
+  when:
+    - ansible_distribution == 'Ubuntu'
+    - ansible_distribution_release == 'trusty'
 
 - name: Install pre-built package
   apt:
