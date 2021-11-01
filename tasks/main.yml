@@ -50,12 +50,13 @@
 
 - name: Change admin password
   uri:
-    url: "http://{{ ext_ip }}:{{ ext_http_port }}/users/admin/command/reset-password"
+    url: "{% if insecure %}http{% else %}https{% endif %}://{{ ext_ip }}:{{ ext_http_port }}/users/admin/command/reset-password"
     method: POST
     body_format: json
     user: admin
     password: "{{ eventstore_admin_password }}"
     force_basic_auth: true
+    validate_certs: false
     body: '{"newPassword":"{{ eventstore_admin_new_password }}"}'
     headers:
       Content-Type: "application/json"
