@@ -37,6 +37,14 @@
   when:
     - eventstore_generate_node_certitificate
 
+- name: Check if node certificate already exists
+  stat:
+    path: "{{ eventstore_certificate_path }}/{{ eventstore_node_cert_out }}"
+  register: node_cert_folder
+
+- debug:
+    var: node_cert_folder
+
 - name: Generate node certificate
   become: yes
   become_user: eventstore
@@ -52,6 +60,7 @@
     chdir: "{{ eventstore_certificate_path }}"
   when:
     - eventstore_generate_node_certitificate
+    - node_cert_folder.stat.exists == false
 
 - name: Add configuration
   template:
@@ -76,7 +85,7 @@
 
 - name: Change admin password
   uri:
-    url: "{% if insecure %}http{% else %}https{% endif %}://localhost:{{ ext_http_port }}/users/admin/command/reset-password"
+    url: "{% if insecure %}http{% else %}https{% endif %}://{{ ext_ip }}:{{ ext_http_port }}/users/admin/command/reset-password"
     method: POST
     body_format: json
     user: admin
