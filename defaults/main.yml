@@ -4,3 +4,10 @@ eventstore_admin_new_password: null
 eventstore_config_file: "{{ role_path }}/templates/eventstore.conf.j2"
 eventstore_wait_for_http: true
 eventstore_wait_for_http_timeout: 30
+eventstore_generate_node_certitificate: false
+eventstore_certificate_path: /etc/eventstore/certs
+eventstore_ca_key_path: ./ca/ca.key
+eventstore_ca_cert_path: ./ca/ca.crt
+eventstore_node_cert_days: 365
+eventstore_node_cert_out: ./node
+evenstore_gencert_cli_version: 1.0.2

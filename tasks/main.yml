@@ -27,6 +27,32 @@
       eventstore-oss_{{ eventstore_version }}_amd64.deb/download.deb"
     state: present
 
+- name: Install es-gencert-cli
+  ansible.builtin.unarchive:
+    src: "https://github.com/EventStore/es-gencert-cli/releases/download/\
+      {{ evenstore_gencert_cli_version }}/\
+      es-gencert-cli_{{ evenstore_gencert_cli_version }}_Linux-x86_64.tar.gz"
+    dest: /usr/local/bin
+    remote_src: yes
+  when:
+    - eventstore_generate_node_certitificate
+
+- name: Generate node certificate
+  become: yes
+  become_user: eventstore
+  ansible.builtin.shell:
+    cmd: >-
+      es-gencert-cli create-node
+      -ca-certificate {{ eventstore_ca_cert_path }}
+      -ca-key {{ eventstore_ca_key_path }}
+      -days {{ eventstore_node_cert_days }}
+      -out {{ eventstore_node_cert_out }}
+      -ip-addresses {{ ['127.0.0.1', ansible_default_ipv4.address] | select | join(',') }}
+      -dns-names {{ ['localhost', inventory_hostname, cluster_dns] | select | join(',') }}
+    chdir: "{{ eventstore_certificate_path }}"
+  when:
+    - eventstore_generate_node_certitificate
+
 - name: Add configuration
   template:
     src: "{{ eventstore_config_file }}"
@@ -50,7 +76,7 @@
 
 - name: Change admin password
   uri:
-    url: "{% if insecure %}http{% else %}https{% endif %}://{{ ext_ip }}:{{ ext_http_port }}/users/admin/command/reset-password"
+    url: "{% if insecure %}http{% else %}https{% endif %}://localhost:{{ ext_http_port }}/users/admin/command/reset-password"
     method: POST
     body_format: json
     user: admin
@@ -70,4 +96,5 @@
   when:
     - eventstore_admin_new_password is defined
     - eventstore_wait_for_http|default(true)|bool == true
+    - insecure == false
   run_once: true
