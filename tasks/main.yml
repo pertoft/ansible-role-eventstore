@@ -27,6 +27,38 @@
       eventstore-oss_{{ eventstore_version }}_amd64.deb/download.deb"
     state: present
 
+- name: Install es-gencert-cli
+  ansible.builtin.unarchive:
+    src: "https://github.com/EventStore/es-gencert-cli/releases/download/\
+      {{ evenstore_gencert_cli_version }}/\
+      es-gencert-cli_{{ evenstore_gencert_cli_version }}_Linux-x86_64.tar.gz"
+    dest: /usr/local/bin
+    remote_src: yes
+  when:
+    - eventstore_generate_node_certitificate
+
+- name: Check if node certificate already exists
+  stat:
+    path: "{{ eventstore_certificate_path }}/{{ eventstore_node_cert_out }}"
+  register: node_cert_folder
+
+- name: Generate node certificate
+  become: yes
+  become_user: eventstore
+  ansible.builtin.shell:
+    cmd: >-
+      es-gencert-cli create-node
+      -ca-certificate {{ eventstore_ca_cert_path }}
+      -ca-key {{ eventstore_ca_key_path }}
+      -days {{ eventstore_node_cert_days }}
+      -out {{ eventstore_node_cert_out }}
+      -ip-addresses {{ eventstore_node_cert_ip_addresses | select | join(',') }}
+      -dns-names {{ eventstore_node_cert_dns_names | select | join(',') }}
+    chdir: "{{ eventstore_certificate_path }}"
+  when:
+    - eventstore_generate_node_certitificate
+    - node_cert_folder.stat.exists == false
+
 - name: Add configuration
   template:
     src: "{{ eventstore_config_file }}"
@@ -50,12 +82,13 @@
 
 - name: Change admin password
   uri:
-    url: "http://{{ ext_ip }}:{{ ext_http_port }}/users/admin/command/reset-password"
+    url: "{% if insecure %}http{% else %}https{% endif %}://{{ ext_ip }}:{{ ext_http_port }}/users/admin/command/reset-password"
     method: POST
     body_format: json
     user: admin
     password: "{{ eventstore_admin_password }}"
     force_basic_auth: true
+    validate_certs: false
     body: '{"newPassword":"{{ eventstore_admin_new_password }}"}'
     headers:
       Content-Type: "application/json"
@@ -69,4 +102,5 @@
   when:
     - eventstore_admin_new_password is defined
     - eventstore_wait_for_http|default(true)|bool == true
+    - insecure == false
   run_once: true
