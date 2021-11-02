@@ -25,6 +25,12 @@ eventstore_ca_key_path: ./ca/ca.key
 eventstore_ca_cert_path: ./ca/ca.crt
 eventstore_node_cert_days: 365
 eventstore_node_cert_out: ./node
+eventstore_node_cert_ip_addresses:
+  - 127.0.0.1
+  - "{{ ansible_default_ipv4.address }}"
+eventstore_node_cert_dns_names:
+  - localhost
+  - "{{ inventory_hostname }}"
 ```
 
 ## Configuration
@@ -51,12 +57,19 @@ eventstore_ca_key_path: ./ca/ca.key
 eventstore_ca_cert_path: ./ca/ca.crt
 eventstore_node_cert_days: 365
 eventstore_node_cert_out: ./node
+eventstore_node_cert_ip_addresses:
+  - 127.0.0.1
+  - "{{ ansible_default_ipv4.address }}"
+eventstore_node_cert_dns_names:
+  - localhost
+  - "{{ inventory_hostname }}"
 ```
 This will in turn generate the following files:
 ```
 /etc/eventstore/certs/node/node.key
 /etc/eventstore/certs/node/node.crt
 ```
+with SANs matching loopback IP address/DNS, default IP address (eth0 interface) and hostname DNS.
 
 ## Example Playbook
 
@@ -88,7 +101,7 @@ EnableAtomPubOverHTTP: true
 # Cluster gossip
 ClusterSize: 3
 DiscoverViaDns: true
-ClusterDns: eventstore
+ClusterDns: eventstore.dns
 
 # Projections configuration
 RunProjections: All
@@ -106,7 +119,13 @@ Example playbook.yml
     eventstore_config_file: ./files/eventstore.conf.j2
     eventstore_ca_key: "{{ lookup('file', 'ca/ca.key') }}"
     eventstore_ca_cert: "{{ lookup('file', 'ca/ca.crt') }}"
-
+    eventstore_node_cert_ip_addresses:
+      - 127.0.0.1
+      - "{{ ansible_default_ipv4.address }}"
+    eventstore_node_cert_dns:
+      - localhost
+      - "{{ inventory_hostname }}"
+      - eventstore.dns
   pre_tasks:
     - name: Ensure eventstore group exists
       ansible.builtin.group:

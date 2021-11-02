@@ -8,6 +8,12 @@ eventstore_generate_node_certitificate: false
 eventstore_certificate_path: /etc/eventstore/certs
 eventstore_ca_key_path: ./ca/ca.key
 eventstore_ca_cert_path: ./ca/ca.crt
+evenstore_gencert_cli_version: 1.0.2
 eventstore_node_cert_days: 365
 eventstore_node_cert_out: ./node
-evenstore_gencert_cli_version: 1.0.2
+eventstore_node_cert_ip_addresses:
+  - 127.0.0.1
+  - "{{ ansible_default_ipv4.address }}"
+eventstore_node_cert_dns_names:
+  - localhost
+  - "{{ inventory_hostname }}"
