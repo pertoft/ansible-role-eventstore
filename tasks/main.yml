@@ -71,6 +71,7 @@
     name: eventstore
     state: started
     enabled: true
+  when: not ansible_check_mode
 
 - name: Wait for external HTTP port to become open on the host
   wait_for:
