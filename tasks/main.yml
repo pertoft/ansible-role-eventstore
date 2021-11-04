@@ -85,14 +85,14 @@
 - name: Wait for external HTTP port to become open on the host
   wait_for:
     host: "{{ ext_ip }}"
-    port: "{{ ext_http_port }}"
+    port: "{{ http_port }}"
     delay: 5
     timeout: "{{ eventstore_wait_for_http_timeout }}"
   when: eventstore_wait_for_http|default(true)|bool == true
 
 - name: Change admin password
   uri:
-    url: "{% if insecure %}http{% else %}https{% endif %}://{{ ext_ip }}:{{ ext_http_port }}/users/admin/command/reset-password"
+    url: "{% if insecure %}http{% else %}https{% endif %}://{{ ext_ip }}:{{ http_port }}/users/admin/command/reset-password"
     method: POST
     body_format: json
     user: admin

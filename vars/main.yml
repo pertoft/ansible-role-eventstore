@@ -1,6 +1,6 @@
 config: "{{ lookup('template', eventstore_config_file) | from_yaml }}"
 int_ip: "{{ config.IntIp | default('127.0.0.1', true) }}"
 ext_ip: "{{ config.ExtIp | default('127.0.0.1', true) }}"
-ext_http_port: "{{ config.ExtHttpPort | default(2113, true) }}"
+http_port: "{{ config.HttpPort | default(2113, true) }}"
 insecure: "{{ config.Insecure | default(false, true) }}"
 cluster_dns: "{{ config.ClusterDns | default(false, true) }}"
