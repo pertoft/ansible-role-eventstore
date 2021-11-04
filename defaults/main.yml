@@ -17,3 +17,4 @@ eventstore_node_cert_ip_addresses:
 eventstore_node_cert_dns_names:
   - localhost
   - "{{ inventory_hostname }}"
+eventstore_validate_certs: false

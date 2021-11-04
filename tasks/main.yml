@@ -28,12 +28,12 @@
     state: present
 
 - name: Install es-gencert-cli
-  ansible.builtin.unarchive:
+  unarchive:
     src: "https://github.com/EventStore/es-gencert-cli/releases/download/\
       {{ evenstore_gencert_cli_version }}/\
       es-gencert-cli_{{ evenstore_gencert_cli_version }}_Linux-x86_64.tar.gz"
     dest: /usr/local/bin
-    remote_src: yes
+    remote_src: true
   when:
     - eventstore_generate_node_certitificate
 
@@ -43,7 +43,7 @@
   register: node_cert_folder
 
 - name: Generate node certificate
-  ansible.builtin.shell:
+  shell:  # noqa command-instead-of-shell
     cmd: >-
       es-gencert-cli create-node
       -ca-certificate {{ eventstore_ca_cert_path }}
@@ -55,16 +55,23 @@
     chdir: "{{ eventstore_certificate_path }}"
   when:
     - eventstore_generate_node_certitificate
-    - node_cert_folder.stat.exists == false
+    - not node_cert_folder.stat.exists
+
+- name: List generated node certificate files
+  find:
+    paths: "{{ eventstore_certificate_path }}/{{ eventstore_node_cert_out }}"
+    patterns: "*.key,*.crt"
+  register: node_certificate_files
+  when:
+    - eventstore_generate_node_certitificate
 
 - name: Set node certificate permissions
-  ansible.builtin.file:
-    path: "{{ eventstore_certificate_path }}/{{ eventstore_node_cert_out }}"
+  file:
+    path: "{{ item.path }}"
     mode: 0600
     owner: eventstore
     group: eventstore
-    state: directory
-    recurse: yes
+  with_items: "{{ node_certificate_files.files }}"
   when:
     - eventstore_generate_node_certitificate
 
@@ -72,6 +79,9 @@
   template:
     src: "{{ eventstore_config_file }}"
     dest: /etc/eventstore/eventstore.conf
+    mode: 0644
+    owner: eventstore
+    group: eventstore
   notify:
     - restart eventstore
 
@@ -88,7 +98,7 @@
     port: "{{ http_port }}"
     delay: 5
     timeout: "{{ eventstore_wait_for_http_timeout }}"
-  when: eventstore_wait_for_http|default(true)|bool == true
+  when: eventstore_wait_for_http|default(true)|bool
 
 - name: Change admin password
   uri:
@@ -98,19 +108,19 @@
     user: admin
     password: "{{ eventstore_admin_password }}"
     force_basic_auth: true
-    validate_certs: false
+    validate_certs: "{{ eventstore_validate_certs }}"
     body: '{"newPassword":"{{ eventstore_admin_new_password }}"}'
     headers:
       Content-Type: "application/json"
       charset: "UTF-8"
     status_code:
-    - 200
-    - 401
+      - 200
+      - 401
   register: pwd_change_result
   changed_when:
     - pwd_change_result.status == 200
   when:
     - eventstore_admin_new_password is defined
-    - eventstore_wait_for_http|default(true)|bool == true
-    - insecure == false
+    - eventstore_wait_for_http|default(true)|bool
+    - not insecure
   run_once: true

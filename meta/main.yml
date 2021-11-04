@@ -1,7 +1,8 @@
 galaxy_info:
   role_name: eventstore
+  namespace: gsoft
   author: Yohan Belval
-  description: EventStore database role for Linux.
+  description: EventStoreDB role for Linux.
   company: GSoft
 
   license: "license (Apache-2.0)"
@@ -14,7 +15,9 @@ galaxy_info:
         - trusty
         - xenial
         - bionic
+        - focal
 
   galaxy_tags:
     - eventstore
+    - eventstoredb
     - database
