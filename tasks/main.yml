@@ -43,8 +43,6 @@
   register: node_cert_folder
 
 - name: Generate node certificate
-  become: yes
-  become_user: eventstore
   ansible.builtin.shell:
     cmd: >-
       es-gencert-cli create-node
@@ -58,6 +56,17 @@
   when:
     - eventstore_generate_node_certitificate
     - node_cert_folder.stat.exists == false
+
+- name: Set node certificate permissions
+  ansible.builtin.file:
+    path: "{{ eventstore_certificate_path }}/{{ eventstore_node_cert_out }}"
+    mode: 0600
+    owner: eventstore
+    group: eventstore
+    state: directory
+    recurse: yes
+  when:
+    - eventstore_generate_node_certitificate
 
 - name: Add configuration
   template:
