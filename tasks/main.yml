@@ -1,3 +1,5 @@
+
+
 # See https://github.com/ansible/ansible/issues/9966
 - name: Install apt_key dependencies
   become: true
@@ -19,12 +21,24 @@
     - ansible_distribution == 'Ubuntu'
     - ansible_distribution_release == 'trusty'
 
+- name: Download zsh installer
+  ansible.builtin.get_url:
+    url: https://packagecloud.io/install/repositories/EventStore/EventStore-OSS/script.deb.sh 
+    dest: /tmp/eventstore-installer.sh
+    mode: 755
+
+- name: Run apt repo installer script
+  ansible.builtin.shell: /tmp/eventstore-installer.sh
+
+- name: Remove the installer script
+  ansible.builtin.file:
+    path: /tmp/eventstore-installer.sh
+    state: absent
+
 - name: Install pre-built package
   apt:
-    deb: "https://packagecloud.io/EventStore/EventStore-OSS/packages/\
-      {{ ansible_distribution }}/\
-      {{ ansible_distribution_release }}/\
-      eventstore-oss_{{ eventstore_version }}_amd64.deb/download.deb"
+    update_cache: true
+    name: eventstore-oss
     state: present
 
 - name: Install es-gencert-cli
@@ -84,12 +98,17 @@
     group: eventstore
   notify:
     - restart eventstore
+  tags: eventstore_config
 
 - name: Ensure service is started and enabled to start at boot
   systemd:
     name: eventstore
     state: started
     enabled: true
+  register: eventstore_service_details
+  until: eventstore_service_details.status.ActiveState == "active"
+  retries: 15
+  delay: 20
   when: not ansible_check_mode
 
 - name: Wait for external HTTP port to become open on the host
